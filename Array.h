@@ -10,7 +10,6 @@ class Array
 public:
     T* arr;
     int size = 0;
-    int cur = 0; // it is for keeping place pointer
     
     // Default Contructor
     Array() : arr(nullptr), size(0) {}
@@ -20,6 +19,24 @@ public:
     {
         arr = new T[n];
         size = n;
+    }
+
+    // Copy constructor
+    Array(const Array& other)
+    {
+        size = other.size;
+        if(size > 0)
+        {
+            arr = new T[size];
+            for(int i = 0; i < size; i++)
+            {
+                arr[i] = other.arr[i];
+            }
+        }
+        else
+        {
+            arr = nullptr;
+        }
     }
 
     // Destructor
@@ -34,10 +51,14 @@ public:
     {
         if(this != &other)
         {
-            delete[] arr;
+            // Deleting from dynamic memory incase of copying from another array
+            if(arr != nullptr)
+            {
+                delete[] arr;
+            }
+
             size = other.size;
             arr = new T[size];
-            cur = other.cur;
 
             for(int i = 0; i < size; i++)
             {
@@ -47,47 +68,41 @@ public:
         return *this;
     }
 
+    // for non constant elements
     T& operator[](int index)
     {
         if(index < 0 || index >= size)
         {
-            cout<<"Index Out of Bounds\n";
-            exit(1);
+            throw out_of_range("Error: Out of Range");
         }
 
         return arr[index];
     }
 
-    int getSize()
-    {
-        return size;
-    }
-
-    T& getLane(int index)
+    // for constant elements
+    const T& operator[](int index) const
     {
         if(index < 0 || index >= size)
         {
-            cout << "Error: Index Out of Bounds\n";
-            throw exception("Index Out of Bounds\n");
+            throw out_of_range("Error: Out of Range");
         }
 
         return arr[index];
     }
 
+    int getSize() const
+    {
+        return size;
+    }
+    
+    // if i want to print elements
     friend ostream& operator<<(ostream& out, const Array<T>& a)
     {
         for(int i = 0; i < a.size; i++)
         {
-            out << i << " = "<< a.arr[i] << endl;
+            out << "Lane : " << i << ": "<< a.arr[i] << endl;
         }
 
         return out;
     }
-
-    friend istream& operator>>(istream& in, Array<T>& a)
-    {
-        int laneNumber;
-        auto cardId = 0;
-        cout << "Enter lane number"
-    } 
 };

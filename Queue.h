@@ -11,8 +11,16 @@ class Queue
         int front;
         int rear;
 
+    public:
         // Default constructor
         Queue() : arr(new T[MAX_SIZE]), size(MAX_SIZE), front(-1), rear(-1) {}
+        Queue(int n) : arr(new T[n]), size(n), front(-1), rear(-1) {}
+        
+        // Destructor
+        ~Queue() 
+        {
+            delete[] arr;
+        }
 
         bool isEmpty() { return front == -1 || front > rear; }
         bool isFull() { return rear == size - 1; }
@@ -42,7 +50,7 @@ class Queue
             if(isFull())
             {
                 cout << "Queue is full\n";
-                return;
+                throw runtime_error("Queue is empty");
             }
 
             if(isEmpty())
@@ -62,9 +70,8 @@ class Queue
                 return;
             }
 
-            T *ptr = arr[front--];
+            front++;
             
-            // I should check whether deletion will be or not it can cause Memory Leak
-            delete ptr; 
+            // I should check whether deletion will be or not it can cause Memory L
         }
 };

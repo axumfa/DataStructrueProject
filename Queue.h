@@ -51,7 +51,7 @@ class Queue
             if(isFull())
             {
                 cout << "Queue is full\n";
-                throw runtime_error("Queue is empty");
+                return;
             }
 
             if(isEmpty())
@@ -68,16 +68,37 @@ class Queue
             }
         }
 
-        void dequeue()
+        T dequeue()
         {
             if(isEmpty())
             {
                 cout<<"Queue is Empty\n";
-                throw runtime_error("sdfsf")
+                throw runtime_error("sdfsf");
             }
 
-            front++;
+
+            
+            return arr[front++];
+
             // I should check whether deletion will be or not it can cause Memory L
+            if (isEmpty())
+                front = rear = -1;
+            
+                return ans;
+        }
+
+        void display()
+        {
+            if (isEmpty()) {
+                cout << "Queue is empty" << endl;
+                return;
+            }
+            cout << "Queue:  ";
+            for (int i = front; i <= rear; i++) {
+                cout << arr[i] << " ";
+            }
+
+            cout << endl;
         }
 };
 

@@ -30,7 +30,7 @@ class Queue
             if(isEmpty())
             {
                 cout << "Queue is empty" << endl;
-                return;
+                return nullptr;
             }
             return arr[front];
         }
@@ -40,13 +40,14 @@ class Queue
             if(isEmpty())
             {
                 cout << "Queue is empty\n";
-                return; 
+                return nullptr; 
             }
             return arr[rear];
         }
 
         void enqueue(T val)
         {
+            try{
             if(isFull())
             {
                 cout << "Queue is full\n";
@@ -60,6 +61,11 @@ class Queue
 
             arr[++rear] = val;
             cout << " Element added into Queue: "<< val;
+            }
+            catch(exception e)
+            {
+                e.message("Hi");
+            }
         }
 
         void dequeue()
@@ -67,11 +73,17 @@ class Queue
             if(isEmpty())
             {
                 cout<<"Queue is Empty\n";
-                return;
+                throw runtime_error("sdfsf")
             }
 
             front++;
-            
             // I should check whether deletion will be or not it can cause Memory L
         }
 };
+
+int main()
+{
+    Queue<int> s(10);
+    s.dequeue();
+
+}

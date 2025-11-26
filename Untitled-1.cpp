@@ -1,121 +1,83 @@
 #include<iostream>
-
 using namespace std;
-const int DEFAULT_SIZE = 10;
+
+#define MAX_SIZE 100
 template<typename T>
-class Stack
+class Queue
 {
     private:
         T* arr;
         int size;
-        int top;
-    
+        int front;
+        int rear;
+
     public:
-        // We can not allocate memory for empty(withuot size) stack 
-        Stack() : arr(new T[DEFAULT_SIZE]), size(DEFAULT_SIZE), top(-1) {}    
-
-        // Parametrized Constructor
-        Stack(int n) : arr(new T[n]), size(n), top(-1) {}
-
-        // Copy constructor
-        Stack(const Stack& other) : arr(new T[other.size]), size(other.size), top(other.top)
-        {
-            try
-            {
-                for(int i = 0; i <= top; i++)
-                    arr[i] = other.arr[i];
-            } catch(...)
-            {
-                delete[] arr;
-                throw;
-            }
-
-        }
-        ~Stack()
+        // Default constructor
+        Queue() : arr(new T[MAX_SIZE]), size(MAX_SIZE), front(-1), rear(-1) {}
+        Queue(int n) : arr(new T[n]), size(n), front(-1), rear(-1) {}
+        
+        // Destructor
+        ~Queue() 
         {
             delete[] arr;
         }
 
-        friend ostream& operator<<(ostream& os, const Stack<T>& s)
+        bool isEmpty() { return front == -1 || front > rear; }
+        bool isFull() { return rear == size - 1; }
+
+        T getFront()
         {
-            if(s.isEmpty())
+            if(isEmpty())
             {
-                os <<  "Stack is empty";
-                return os;
+                cout << "Queue is empty" << endl;
+                return nullptr;
             }
-
-            os << "Stack (top to bottom): ";
-            for(int i = s.top; i >= 0; i--)
-            {
-                os << s.arr[i];
-                if(i > 0) os << " ";
-            }
-            return os;
+            return arr[front];
         }
-        Stack& operator=(const Stack& other)
+
+        T getRear()
         {
-            if(this != &other)
+            if(isEmpty())
             {
-                Stack temp(other);
-
-                swap(arr, temp.arr);
-                swap(size, temp.size);
-                swap(top, temp.top);
+                cout << "Queue is empty\n";
+                return nullptr; 
             }
-
-            return *this;
+            return arr[rear];
         }
-        
-        void push(const T& a)
+
+        void enqueue(T val)
         {
             if(isFull())
             {
-                throw overflow_error("Overflow, Stack is Full\n");
+                cout << "Queue is full\n";
+                throw runtime_error("Queue is empty");
             }
-            // ++top because we will start with -1 but our first element should be 0
-            arr[++top] = a;
+
+            if(isEmpty())
+            {
+                front = 0;
+            }
+
+            arr[++rear] = val;
+            cout << " Element added into Queue: "<< val;
         }
 
-        bool isEmpty() const { return top == -1;  }
-        bool isFull() const { return top >= size - 1; }
-        int getSize() const { return size; }
-
-        T pop()
+        void dequeue()
         {
             if(isEmpty())
             {
-                throw underflow_error("Underflow, Stack is Empty\n");
+                cout<<"Queue is Empty\n";
+                throw runtime_error("sdfsf")
             }
-            return arr[top--];
-        }
 
-        T& peek()
-        {
-            if(isEmpty())
-            {
-                throw underflow_error("Underflow, Stack is Empty\n");
-            }
-            return arr[top];
-        }
-        
-        const T& peek() const{
-            if(isEmpty())
-            {
-                throw underflow_error("Underflow, Stack is Empty\n");
-            }
-            return arr[top];
+            front++;
+            // I should check whether deletion will be or not it can cause Memory L
         }
 };
 
 int main()
 {
-    Stack<int> s(10);
-    s.push(1);
-    s.push(2);
-    s.push(3);
-    cout<<s;
-    s.pop();
-    s.pop();
-    s.pop();
-    s.pop();
+    Queue<int> s(10);
+    s.dequeue();
+
 }

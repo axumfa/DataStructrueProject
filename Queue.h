@@ -16,6 +16,34 @@ class Queue
         Queue() : arr(new T[MAX_SIZE]), size(MAX_SIZE), front(-1), rear(-1) {}
         Queue(int n) : arr(new T[n]), size(n), front(-1), rear(-1) {}
         
+        //copy constructor
+        Queue(const Queue& other) : size(other.size), front(other.front), rear(other.rear) 
+        {
+            arr = new T[size];
+            for(int i = 0; i < size; i++)
+            {
+                arr[i] = other.arr[i];
+            }
+        }
+        
+        // Copy assignment operator
+        Queue& operator=(const Queue& other)
+        {
+            if(this != &other)
+            {
+                delete[] arr;
+                size = other.size;
+                front = other.front;
+                rear = other.rear;
+                arr = new T[size];
+
+                for(int i = 0; i < size; i++)
+                    arr[i] = other.arr[i];
+            }
+
+            return *this;
+        }
+
         // Destructor
         ~Queue() 
         {
@@ -29,8 +57,7 @@ class Queue
         {
             if(isEmpty())
             {
-                cout << "Queue is empty" << endl;
-                return nullptr;
+                throw runtime_error("Queue is empty");
             }
             return arr[front];
         }
@@ -39,15 +66,13 @@ class Queue
         {
             if(isEmpty())
             {
-                cout << "Queue is empty\n";
-                return nullptr; 
+                throw runtime_error("Queue is empty");
             }
             return arr[rear];
         }
 
         void enqueue(T val)
         {
-            try{
             if(isFull())
             {
                 cout << "Queue is full\n";
@@ -55,36 +80,30 @@ class Queue
             }
 
             if(isEmpty())
-            {
                 front = 0;
-            }
+            
 
             arr[++rear] = val;
             cout << " Element added into Queue: "<< val;
-            }
-            catch(exception e)
-            {
-                e.message("Hi");
-            }
+            
         }
 
         T dequeue()
         {
             if(isEmpty())
             {
-                cout<<"Queue is Empty\n";
-                throw runtime_error("sdfsf");
+                
+                throw runtime_error("Queue is empty");
             }
 
+            T ans = arr[front++];
 
-            
-            return arr[front++];
 
             // I should check whether deletion will be or not it can cause Memory L
             if (isEmpty())
                 front = rear = -1;
             
-                return ans;
+            return ans;
         }
 
         void display()
@@ -101,10 +120,3 @@ class Queue
             cout << endl;
         }
 };
-
-int main()
-{
-    Queue<int> s(10);
-    s.dequeue();
-
-}

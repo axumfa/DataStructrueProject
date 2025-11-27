@@ -57,7 +57,7 @@ class Queue
         {
             if(isEmpty())
             {
-                throw runtime_error("Queue is empty");
+                throw underflow_error("Queue is empty");
             }
             return arr[front];
         }
@@ -66,7 +66,7 @@ class Queue
         {
             if(isEmpty())
             {
-                throw runtime_error("Queue is empty");
+                throw underflow_error("Queue is empty");
             }
             return arr[rear];
         }
@@ -75,8 +75,7 @@ class Queue
         {
             if(isFull())
             {
-                cout << "Queue is full\n";
-                return;
+                throw overflow_error("Queue is full");
             }
 
             if(isEmpty())
@@ -84,7 +83,6 @@ class Queue
             
 
             arr[++rear] = val;
-            cout << " Element added into Queue: "<< val;
             
         }
 
@@ -93,7 +91,7 @@ class Queue
             if(isEmpty())
             {
                 
-                throw runtime_error("Queue is empty");
+                throw underflow_error("Queue is empty");
             }
 
             T ans = arr[front++];
@@ -109,8 +107,7 @@ class Queue
         void display()
         {
             if (isEmpty()) {
-                cout << "Queue is empty" << endl;
-                return;
+               throw underflow_error("Queue is empty");
             }
             cout << "Queue:  ";
             for (int i = front; i <= rear; i++) {

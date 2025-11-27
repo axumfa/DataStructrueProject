@@ -70,7 +70,7 @@ class Stack
         {
             if(isFull())
             {
-                throw overflow_error("Overflow, Stack is Full\n");
+                throw overflow_error("Overflow! Stack is full");
             }
             // ++top because we will start with -1 but our first element should be 0
             arr[++top] = a;
@@ -84,7 +84,7 @@ class Stack
         {
             if(isEmpty())
             {
-                throw underflow_error("Underflow, Stack is Empty\n");
+                throw underflow_error("Underflow! Stack is empty");
             }
             return arr[top--];
         }
@@ -93,7 +93,7 @@ class Stack
         {
             if(isEmpty())
             {
-                throw underflow_error("Underflow, Stack is Empty\n");
+                throw underflow_error("Underflow! Stack is empty");
             }
             return arr[top];
         }
@@ -101,7 +101,7 @@ class Stack
         const T& peek() const{
             if(isEmpty())
             {
-                throw underflow_error("Underflow, Stack is Empty\n");
+                throw underflow_error("Underflow! Stack is empty");
             }
             return arr[top];
         }

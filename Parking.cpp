@@ -5,9 +5,8 @@
 
 using namespace std;
 
-// ============================================================================
-// Car: Represents a parked car with ID
-// ============================================================================
+
+// Car class
 class Car {
 public:
     int id;
@@ -28,14 +27,14 @@ public:
     }
 };
 
+// static total cars
 int Car::totalCars = 0;
 
-// ============================================================================
-// Parking: Manages multiple parking lanes using Array<Stack<Car>>
-// ============================================================================
+// Parking class which will contain all logic and parkinglanes 
 class Parking {
 private:
-    Array<Stack<Car>> parkingLanes; // Array of Stacks
+    // array of stack consisting car object
+    Array<Stack<Car>> parkingLanes;
     int laneCount;
     int laneCapacity;
 
@@ -64,6 +63,7 @@ public:
 
     // Find which lane contains a specific car ID
     int findCarLane(int carId) const {
+        // it will do linaer search so it will be O(N)
         for (int i = 0; i < laneCount; ++i) {
             // Try to find car in each lane by iterating through the stack
             // Since Stack doesn't expose direct iteration, we'll use peek and pop temporarily
@@ -160,10 +160,8 @@ public:
     }
 };
 
-// ============================================================================
-// Main: Interactive Parking System
-// ============================================================================
-int main() {
+void menu()
+{
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
     cout << "Data Structures: Array<Stack<Car>> + Queue<int>\n";
     cout << "========================================================\n\n";
@@ -177,6 +175,7 @@ int main() {
     cin >> capacity;
     if (capacity <= 0) capacity = 5;
 
+    // making instance object with numlanes and capacity of lanes
     Parking lot(numLanes, capacity);
 
     int choice;
@@ -221,6 +220,9 @@ int main() {
             cout << "✗ Invalid option. Please try again.\n";
         }
     }
+}
 
-    return 0;
+// main part 
+int main() {
+    menu();
 }

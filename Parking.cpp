@@ -63,7 +63,7 @@ public:
 
     // Find which lane contains a specific car ID
     int findCarLane(int carId) const {
-        // it will do linaer search so it will be O(N)
+        // it will do linear search so it will be O(N)
         for (int i = 0; i < laneCount; ++i) {
             // Try to find car in each lane by iterating through the stack
             // Since Stack doesn't expose direct iteration, we'll use peek and pop temporarily
@@ -88,63 +88,55 @@ public:
         if (lane == -1) return -1; // not found
 
         Stack<Car>& s = parkingLanes[lane];
-        Queue<int> tempQueue(laneCapacity); // temporary queue for displaced car IDs
+        Queue<Car> tempQueue(laneCapacity); // temporary queue for displaced cars
 
         int moves = 0;
-        int countMoved = 0;
-        int targetIndex = -1;
+        bool found = false;
 
-        // Pop cars until we find the target
-        int* movedCarIds = new int[laneCapacity];
-        int moveIdx = 0;
+        cout << "\n--- Removal Process for Car " << carId << " from Lane " << (lane + 1) << " ---\n";
+        cout << "Cars moved temporarily (in order): ";
 
         try {
-            while (!s.isEmpty()) {
+            // Popping cars until we find the correct one
+            while (!s.isEmpty()) 
+            {
                 Car c = s.pop();
-                movedCarIds[moveIdx++] = c.id;
-                countMoved++;
                 ++moves; // each pop is a move
 
-                if (c.id == carId) {
-                    targetIndex = moveIdx - 1;
+                if (c.id == carId) 
+                {
+                    found = true;
+                    cout << "\n✓ Car " << carId << " found and removed!\n";
                     break; // found and removed target
                 }
+                tempQueue.enqueue(c);
+                cout << c.id << " ";
             }
+
+            if(!found)
+            {
+                cout << "\n✗ Car not found in this lane.\n";
+                return -1;
+            }
+
+            // Restoring cars from queue back to stack
+            cout << "Re-parking cars back (from queue): ";  // ✅ ADDED THIS LINE
+            while(!tempQueue.isEmpty())
+            {
+                Car c = tempQueue.dequeue();
+                s.push(c);
+                ++moves;
+                cout << c.id << " ";
+            }
+            cout << "\n";
+
         } catch (...) {
-            delete[] movedCarIds;
+            cout << "\n✗ Error during car removal process.\n";  // ✅ FIXED TYPO
             return -1;
         }
-
-        // Display cars moved
-        cout << "\n--- Removal Details for Car " << carId << " ---\n";
-        cout << "Cars moved temporarily (order moved out): ";
-        if (countMoved == 0) {
-            cout << "none\n";
-        } else {
-            for (int i = 0; i < countMoved; ++i) {
-                cout << movedCarIds[i];
-                if (i + 1 < countMoved) cout << ", ";
-            }
-            cout << "\n";
-
-            // Re-push cars back in reverse order (excluding the target car)
-            cout << "Re-parking cars: ";
-            for (int i = targetIndex - 1; i >= 0; --i) {
-                Car pushCar(movedCarIds[i]);
-                try {
-                    s.push(pushCar);
-                    ++moves; // each push is a move
-                    cout << movedCarIds[i];
-                    if (i > 0) cout << ", ";
-                } catch (...) {
-                    cout << "\nError re-parking car " << movedCarIds[i] << "\n";
-                }
-            }
-            cout << "\n";
-        }
-
-        cout << "Total movements (including removal): " << moves << "\n";
-        delete[] movedCarIds;
+        
+        cout << "Total movements (pops + pushes): " << moves << "\n";
+        cout << "-------------------------------------------\n";
         return moves;
     }
 
@@ -163,7 +155,7 @@ public:
 void menu()
 {
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
-    cout << "Data Structures: Array<Stack<Car>> + Queue<int>\n";
+    cout << "Data Structures: Array<Stack<Car>> + Queue<Car>\n";  // ✅ Changed to Queue<Car>
     cout << "========================================================\n\n";
 
     int numLanes, capacity;

@@ -120,7 +120,7 @@ public:
             }
 
             // Restoring cars from queue back to stack
-            cout << "Re-parking cars back (from queue): ";  // ✅ ADDED THIS LINE
+            cout << "Re-parking cars back (from queue): ";
             while(!tempQueue.isEmpty())
             {
                 Car c = tempQueue.dequeue();
@@ -131,7 +131,7 @@ public:
             cout << "\n";
 
         } catch (...) {
-            cout << "\n✗ Error during car removal process.\n";  // ✅ FIXED TYPO
+            cout << "\n✗ Error during car removal process.\n"; 
             return -1;
         }
         
@@ -155,7 +155,7 @@ public:
 void menu()
 {
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
-    cout << "Data Structures: Array<Stack<Car>> + Queue<Car>\n";  // ✅ Changed to Queue<Car>
+    cout << "Data Structures: Array<Stack<Car>> + Queue<Car>\n";  
     cout << "========================================================\n\n";
 
     int numLanes, capacity;

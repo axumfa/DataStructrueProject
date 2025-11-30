@@ -2,33 +2,10 @@
 #include "Array.h"
 #include "Queue.h"
 #include "Stack.h"
+#include "Car.h"
 
 using namespace std;
 
-
-// Car class
-class Car {
-public:
-    int id;
-    static int totalCars;
-
-    Car() : id(0) {}
-
-    Car(int carId) : id(carId) {}
-
-    static Car createNewCar() {
-        return Car(++totalCars);
-    }
-
-    // Overload << for easy printing
-    friend ostream& operator<<(ostream& os, const Car& c) {
-        os << c.id;
-        return os;
-    }
-};
-
-// static total cars
-int Car::totalCars = 0;
 
 // Parking class which will contain all logic and parkinglanes 
 class Parking {
@@ -71,7 +48,7 @@ public:
             while (!tempStack.isEmpty()) {
                 try {
                     Car c = tempStack.pop();
-                    if (c.id == carId) {
+                    if (c.getId() == carId) {
                         return i;
                     }
                 } catch (...) {
@@ -103,14 +80,14 @@ public:
                 Car c = s.pop();
                 ++moves; // each pop is a move
 
-                if (c.id == carId) 
+                if (c.getId() == carId) 
                 {
                     found = true;
                     cout << "\n✓ Car " << carId << " found and removed!\n";
                     break; // found and removed target
                 }
                 tempQueue.enqueue(c);
-                cout << c.id << " ";
+                cout << c.getId() << " ";
             }
 
             if(!found)
@@ -126,7 +103,7 @@ public:
                 Car c = tempQueue.dequeue();
                 s.push(c);
                 ++moves;
-                cout << c.id << " ";
+                cout << c.getId() << " ";
             }
             cout << "\n";
 
@@ -155,7 +132,6 @@ public:
 void menu()
 {
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
-    cout << "Data Structures: Array<Stack<Car>> + Queue<Car>\n";  
     cout << "========================================================\n\n";
 
     int numLanes, capacity;

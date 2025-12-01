@@ -1,4 +1,6 @@
+#pragma once
 #include<iostream>
+#include<stdexcept>
 
 const int DEFAULT_SIZE = 10;
 template<typename T>
@@ -69,7 +71,7 @@ class Stack
         {
             if(isFull())
             {
-                throw overflow_error("Overflow! Stack is full");
+                throw std::overflow_error("Overflow! Stack is full");
             }
             // ++top because we will start with -1 but our first element should be 0
             arr[++top] = a;
@@ -83,7 +85,7 @@ class Stack
         {
             if(isEmpty())
             {
-                throw underflow_error("Underflow! Stack is empty");
+                throw std::underflow_error("Underflow! Stack is empty");
             }
             return arr[top--];
         }
@@ -92,7 +94,7 @@ class Stack
         {
             if(isEmpty())
             {
-                throw underflow_error("Underflow! Stack is empty");
+                throw std::underflow_error("Underflow! Stack is empty");
             }
             return arr[top];
         }
@@ -100,7 +102,7 @@ class Stack
         const T& peek() const{
             if(isEmpty())
             {
-                throw underflow_error("Underflow! Stack is empty");
+                throw std::underflow_error("Underflow! Stack is empty");
             }
             return arr[top];
         }

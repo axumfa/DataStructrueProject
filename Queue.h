@@ -1,4 +1,7 @@
+#pragma once
 #include<iostream>
+#include<stdexcept>
+
 
 #define MAX_SIZE 100
 template<typename T>
@@ -56,7 +59,7 @@ class Queue
         {
             if(isEmpty())
             {
-                throw underflow_error("Queue is empty");
+                throw std::underflow_error("Queue is empty");
             }
             return arr[front];
         }
@@ -65,7 +68,7 @@ class Queue
         {
             if(isEmpty())
             {
-                throw underflow_error("Queue is empty");
+                throw std::underflow_error("Queue is empty");
             }
             return arr[rear];
         }
@@ -74,7 +77,7 @@ class Queue
         {
             if(isFull())
             {
-                throw overflow_error("Queue is full");
+                throw std::overflow_error("Queue is full");
             }
 
             if(isEmpty())
@@ -90,7 +93,7 @@ class Queue
             if(isEmpty())
             {
                 
-                throw underflow_error("Queue is empty");
+                throw std::underflow_error("Queue is empty");
             }
 
             T ans = arr[front++];
@@ -106,13 +109,13 @@ class Queue
         void display()
         {
             if (isEmpty()) {
-               throw underflow_error("Queue is empty");
+               throw std::underflow_error("Queue is empty");
             }
-            cout << "Queue:  ";
+           std::cout << "Queue:  ";
             for (int i = front; i <= rear; i++) {
-                cout << arr[i] << " ";
+                std::cout << arr[i] << " ";
             }
 
-            cout << endl;
+            std::cout << std::endl;
         }
 };

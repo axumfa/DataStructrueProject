@@ -1,6 +1,10 @@
+#pragma once
 #include<iostream>
 #include<sstream>
 #include<chrono>
+#include<stdexcept>
+#include<iomanip>
+#include<ctime>
 
 #define RATE_PER_HOUR 10000
 
@@ -59,6 +63,65 @@ public:
         return seconds * ratePerSecond;
     }
 
+    // Get formatted fee with currency
+    string getFormattedFee() const
+    {
+        double fee = computeFee();
+        ostringstream out;
+        out << std::fixed << std::setprecision(2) << fee << " units";
+        return out.str();
+    }
+
+    // Get total parked time in hours (rounded up)
+    long long getTotalTimeHours() const
+    {
+        long long seconds = getParkedTimeSeconds();
+        return (seconds + 3599) / 3600; // round up to next hour
+    }
+
+    // Get total parked time in minutes
+    long long getTotalTimeMinutes() const
+    {
+        long long seconds = getParkedTimeSeconds();
+        return (seconds + 59) / 60; // round up to next minute
+    }
+
+    // Display full car information
+    void displayInfo() const
+    {
+        std::cout << "Car ID: " << id << std::endl;
+        std::cout << "Parked: " << (parked ? "Yes" : "No") << std::endl;
+        if (parked) {
+            std::cout << "Parked Time: " << getFormattedTime() << std::endl;
+            std::cout << "Time (Hours): " << getTotalTimeHours() << "h" << std::endl;
+            std::cout << "Time (Minutes): " << getTotalTimeMinutes() << "m" << std::endl;
+            std::cout << "Fee: " << getFormattedFee() << std::endl;
+        }
+    }
+
+    // Reset parked status (for removal)
+    void resetParked()
+    {
+        parked = false;
+    }
+
+    // Get entry time as string (for logging)
+    std::string getEntryTimeString() const
+    {
+        if (!parked) return "Not parked";
+        
+        auto sctp = std::chrono::time_point_cast<std::chrono::seconds>(entryTime);
+        auto tt = std::chrono::system_clock::to_time_t(sctp);
+        std::ostringstream oss;
+        oss << std::ctime(&tt);
+        std::string result = oss.str();
+        // Remove trailing newline
+        if (!result.empty() && result.back() == '\n') {
+            result.pop_back();
+        }
+        return result;
+    }
+
     int getId() const { return id; }
     
     bool isParked() const { return parked; }
@@ -69,9 +132,8 @@ public:
     }
 
     // Overload << for easy printing
-    friend ostream& operator<<(ostream& os, const Car& c) {
-        os << c.getId() << " | "<< c.getFormattedTime();
-       
+    friend std::ostream& operator<<(std::ostream& os, const Car& c) {
+        os << c.getId() << " | "<< c.getFormattedTime() << "| Fee: " << c.getFormattedFee();
         return os;
     }
 };

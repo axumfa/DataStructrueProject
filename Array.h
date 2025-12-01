@@ -1,4 +1,6 @@
+#pragma once
 #include<iostream>
+#include<stdexcept>
 
 
 // this going to be file for Array class
@@ -71,7 +73,7 @@ public:
     {
         if(index < 0 || index >= size)
         {
-            throw out_of_range("Error: Out of Range");
+            throw std::out_of_range("Error: Out of Range");
         }
 
         return arr[index];
@@ -82,7 +84,7 @@ public:
     {
         if(index < 0 || index >= size)
         {
-            throw out_of_range("Error: Out of Range");
+            throw std::out_of_range("Error: Out of Range");
         }
 
         return arr[index];
@@ -94,11 +96,11 @@ public:
     }
     
     // if i want to print elements
-    friend ostream& operator<<(ostream& out, const Array<T>& a)
+    friend std::ostream& operator<<(std::ostream& out, const Array<T>& a)
     {
         for(int i = 0; i < a.size; i++)
         {
-            out << "Lane : " << i << ": "<< a.arr[i] << endl;
+            out << "Lane : " << i << ": "<< a.arr[i] << std::endl;
         }
 
         return out;

@@ -1,7 +1,5 @@
 #include<iostream>
 
-using namespace std;
-
 
 // this going to be file for Array class
 template<typename T>

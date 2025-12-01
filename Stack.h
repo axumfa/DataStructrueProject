@@ -1,6 +1,5 @@
 #include<iostream>
 
-using namespace std;
 const int DEFAULT_SIZE = 10;
 template<typename T>
 class Stack

@@ -3,8 +3,6 @@
 #include<chrono>
 
 #define RATE_PER_HOUR 10000
-using namespace std;
-
 
 // Car class
 class Car {

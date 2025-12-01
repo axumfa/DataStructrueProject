@@ -1,4 +1,5 @@
 #include <iostream>
+#include<iomanip>
 #include "Array.h"
 #include "Queue.h"
 #include "Stack.h"
@@ -30,6 +31,7 @@ public:
         for (int i = 0; i < laneCount; ++i) {
             if (!parkingLanes[i].isFull()) {
                 Car c(carId);
+                c.markEntryTime();
                 parkingLanes[i].push(c);
                 laneUsed = i;
                 return true;
@@ -123,10 +125,109 @@ public:
         for (int i = 0; i < laneCount; ++i) {
             cout << "Lane " << (i + 1) << ": ";
             cout << parkingLanes[i];
-            cout << " (Size: " << parkingLanes[i].getSize() << ", Capacity: " << laneCapacity << ")\n";
+            int occupation = getLaneOccupancy(i);
+            cout << " (Occupied: " << occupation << ", Capacity: " << laneCapacity << ")\n";
         }
         cout << "=================================\n";
     }
+
+    // displaying car details with search without nowing exact place and having instance object
+    void displayCarDetails(int carId) const
+    {
+        int lane = findCarLane(carId);
+        if(lane == -1)
+        {
+            cout << "Car " << carId << " not found\n";
+            return;
+        }
+
+        Stack<Car> tempStack = parkingLanes[lane];
+        while(!tempStack.isEmpty())
+        {
+            Car c = tempStack.pop();
+            if(c.getId() == carId)
+            {
+                cout << "\n === Car Details ===\n";
+                c.displayInfo();
+                cout << "Lane: " << (lane + 1) << "\n";
+                cout << "===========\n";
+                return;
+            }    
+        }
+    }
+
+        // One Lane Occupancy
+    int getLaneOccupancy(int laneIndex) const
+    {
+        if(laneIndex < 0 || laneIndex >= laneCount) { return -1; }
+        
+        Stack<Car> tempStack = parkingLanes[laneIndex];
+        int cnt = 0;
+        while(!tempStack.isEmpty())
+        {
+            tempStack.pop();
+            ++cnt;
+        }
+
+        return cnt;
+    }
+    
+    
+    // getting total parked cars at one point
+    int getTotalParkedCars() const
+    {
+        int cnt = 0;
+        for(int i = 0; i < laneCount; ++i)
+        {
+            cnt += getLaneOccupancy(i);
+        }
+        return cnt;
+    }
+
+    int getLeastOccupiedLane() const{
+        int minOccupancy = INT_MAX;
+        int leastLane = 0;
+
+        for(int i = 0; i < laneCount; ++i)
+        {
+            Stack<Car> tempStack = parkingLanes[i];
+            int cnt = 0;
+
+            while(!tempStack.isEmpty())
+            {
+                tempStack.pop();
+                ++cnt;
+            }
+
+            if (cnt < minOccupancy)
+            {
+                minOccupancy = cnt;
+                leastLane = i;
+            }
+        }
+        return leastLane;
+    }
+
+    void displayStatistics() const 
+    {
+        cout << "\n===== Parking Statistics =====\n";
+        int totalCars = getTotalParkedCars();
+        int capacity = laneCount * laneCapacity;
+        double occupancy = (totalCars * 100.0) / capacity;
+        
+        cout << "Total Parked Cars: " << totalCars << " / " << capacity << "\n";
+        cout << "Occupancy Rate: " << fixed << setprecision(2) << occupancy << "%\n";
+        cout << "Active Lanes: " << laneCount << "\n";
+        cout << "Capacity per Lane: " << laneCapacity << "\n";
+        
+        for (int i = 0; i < laneCount; ++i) 
+        {
+            double percent = (getLaneOccupancy(i) * 100.0) / laneCapacity;
+            cout << "  Lane " << (i + 1) << ": "<< fixed << getLaneOccupancy(i) << "% full\n";
+        }
+        cout << "==============================\n";
+    }
+
 };
 
 void menu()
@@ -148,16 +249,17 @@ void menu()
 
     int choice;
     while (true) {
-        cout << "\n====== MENU ======\n";
         cout << "1) Park a Car\n";
         cout << "2) Remove a Specific Car\n";
         cout << "3) Display All Lanes\n";
-        cout << "4) Exit\n";
+        cout << "4) Display Statistics\n";
+        cout << "5) Exit\n";
         cout << "==================\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
-        if (choice == 1) {
+        if (choice == 1) 
+        {
             int carId;
             cout << "Enter car ID to park: ";
             cin >> carId;
@@ -168,7 +270,9 @@ void menu()
                 cout << "✗ ERROR: All lanes are full. Cannot park car " << carId << ".\n";
             }
         } 
-        else if (choice == 2) {
+
+        else if (choice == 2) 
+        {
             int carId;
             cout << "Enter car ID to remove: ";
             cin >> carId;
@@ -177,15 +281,13 @@ void menu()
                 cout << "✗ ERROR: Car " << carId << " not found in any lane.\n";
             }
         } 
-        else if (choice == 3) {
-            lot.displayAllLanes();
-        } 
-        else if (choice == 4) {
-            cout << "\nThank you for using the Parking System. Goodbye!\n";
-            break;
-        } 
-        else {
-            cout << "✗ Invalid option. Please try again.\n";
+        else if (choice == 3) { lot.displayAllLanes(); } 
+        else if (choice == 4) { lot.displayStatistics(); }
+        
+        else if (choice == 5) 
+        { 
+            cout << "Exiting Program\n";
+            break; 
         }
     }
 }

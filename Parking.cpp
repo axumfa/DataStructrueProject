@@ -15,10 +15,13 @@ private:
     Array<Stack<Car>> parkingLanes;
     int laneCount;
     int laneCapacity;
+    double totalRevenue;        // Track total money collected
+    int totalCarsServed;        // Track total cars that exited
 
 public:
     Parking(int numLanes, int capacity)
-        : parkingLanes(numLanes), laneCount(numLanes), laneCapacity(capacity)
+        : parkingLanes(numLanes), laneCount(numLanes), laneCapacity(capacity), 
+          totalRevenue(0.0), totalCarsServed(0)
     {
         // Initialize each lane with a stack of given capacity
         for (int i = 0; i < numLanes; ++i) {
@@ -62,9 +65,9 @@ public:
     }
 
     // Remove a specific car and count total movements
-    int removeCar(int carId) {
+    double removeCar(int carId) {
         int lane = findCarLane(carId);
-        if (lane == -1) return -1; // not found
+        if (lane == -1) return -1.0; // not found
 
         Stack<Car>& laneStack = parkingLanes[lane];
         Queue<Car> tempQueue(laneCapacity); // temporary queue for displaced cars
@@ -72,6 +75,7 @@ public:
 
         int moves = 0;
         bool found = false;
+        Car removedCar(0);  // store the removed car for fee calculation
 
         cout << "\n--- Removal Process for Car " << carId << " from Lane " << (lane + 1) << " ---\n";
 
@@ -82,10 +86,10 @@ public:
                 Car c = laneStack.pop();
                 ++moves; // each pop is a move
 
-
                 if (c.getId() == carId) 
                 {
                     found = true;
+                    removedCar = c;  // save for fee calculation
                     cout << "\n✓ Car " << carId << " found and removed!\n";
                     break; // found and removed target
                 }
@@ -98,7 +102,7 @@ public:
             if(!found)
             {
                 cout << "\n✗ Car not found in this lane.\n";
-                return -1;
+                return -1.0;
             }
 
             // Restoring cars from stack to queue 
@@ -123,12 +127,19 @@ public:
 
         } catch (...) {
             cout << "\n✗ Error during car removal process.\n"; 
-            return -1;
+            return -1.0;
         }
+        
+        // Calculate and collect payment
+        double fee = removedCar.computeFee();
+        totalRevenue += fee;
+        totalCarsServed++;
         
         cout << "Total movements (pops + pushes): " << moves << "\n";
         cout << "-------------------------------------------\n";
-        return moves;
+        cout << "💰 Fee Collected: " << removedCar.getFormattedFee() << "\n";
+        cout << "-------------------------------------------\n";
+        return fee;
     }
 
     // Display all parking lanes
@@ -220,6 +231,23 @@ public:
         return leastLane;
     }
 
+    // Display financial report
+    void displayFinancialReport() const
+    {
+        cout << "\n===== Financial Report =====\n";
+        cout << "Total Cars Served: " << totalCarsServed << "\n";
+        cout << "Total Revenue Collected: " << fixed << setprecision(2) << totalRevenue << " units\n";
+        
+        if (totalCarsServed > 0) {
+            double avgFee = totalRevenue / totalCarsServed;
+            cout << "Average Fee per Car: " << fixed << setprecision(2) << avgFee << " units\n";
+        } else {
+            cout << "Average Fee per Car: 0.00 units\n";
+        }
+        
+        cout << "=============================\n";
+    }
+
     void displayStatistics() const 
     {
         cout << "\n===== Parking Statistics =====\n";
@@ -242,6 +270,9 @@ public:
 
 };
 
+// Note: collectPayment() is now integrated into removeCar() method
+// which calculates fee and adds to totalRevenue automatically
+
 void menu()
 {
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
@@ -262,10 +293,11 @@ void menu()
     int choice;
     while (true) {
         cout << "1) Park a Car\n";
-        cout << "2) Remove a Specific Car\n";
+        cout << "2) Remove a Specific Car (Collect Fee)\n";
         cout << "3) Display All Lanes\n";
         cout << "4) Display Statistics\n";
-        cout << "5) Exit\n";
+        cout << "5) View Financial Report\n";
+        cout << "6) Exit\n";
         cout << "==================\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -288,15 +320,16 @@ void menu()
             int carId;
             cout << "Enter car ID to remove: ";
             cin >> carId;
-            int moves = lot.removeCar(carId);
-            if (moves == -1) {
+            double fee = lot.removeCar(carId);
+            if (fee < 0) {
                 cout << "✗ ERROR: Car " << carId << " not found in any lane.\n";
             }
         } 
         else if (choice == 3) { lot.displayAllLanes(); } 
         else if (choice == 4) { lot.displayStatistics(); }
+        else if (choice == 5) { lot.displayFinancialReport(); }
         
-        else if (choice == 5) 
+        else if (choice == 6) 
         { 
             cout << "Exiting Program\n";
             break; 

@@ -1,5 +1,7 @@
 #pragma once
 #include<iostream>
+#include<ostream>
+#include<utility>
 #include<stdexcept>
 
 const int DEFAULT_SIZE = 10;
@@ -37,31 +39,18 @@ class Stack
             delete[] arr;
         }
 
-        friend ostream& operator<<(ostream& os, const Stack<T>& s)
-        {
-            if(s.isEmpty())
-            {
-                os <<  "Stack is empty";
-                return os;
-            }
-
-            os << "Stack (top to bottom): ";
-            for(int i = s.top; i >= 0; i--)
-            {
-                os << s.arr[i];
-                if(i > 0) os << " ";
-            }
-            return os;
-        }
+        // overloading = operator
         Stack& operator=(const Stack& other)
         {
             if(this != &other)
             {
+                // changing  this stack it is better
                 Stack temp(other);
 
-                swap(arr, temp.arr);
-                swap(size, temp.size);
-                swap(top, temp.top);
+                // swap will just swap for safety temp is used 
+                std::swap(arr, temp.arr);
+                std::swap(size, temp.size);
+                std::swap(top, temp.top);
             }
 
             return *this;
@@ -73,6 +62,7 @@ class Stack
             {
                 throw std::overflow_error("Overflow! Stack is full");
             }
+            
             // ++top because we will start with -1 but our first element should be 0
             arr[++top] = a;
         }
@@ -107,3 +97,23 @@ class Stack
             return arr[top];
         }
 };
+
+// it is helpfull cases when we will have stack<car> and another maybe array consist of sth 
+// and it will be helpful for printing stack like cout << lane[i]
+template<typename U>
+std::ostream& operator<<(std::ostream& os, Stack<U> s)
+{
+    if (s.isEmpty()) {
+        os << "Stack is empty";
+        return os;
+    }
+
+    os << "Stack (top to bottom): ";
+    bool first = true;
+    while (!s.isEmpty()) {
+        if (!first) os << " ";
+        os << s.pop();
+        first = false;
+    }
+    return os;
+}

@@ -1,12 +1,13 @@
 #pragma once
 #include<iostream>
 #include<sstream>
+#include<string>
 #include<chrono>
 #include<stdexcept>
 #include<iomanip>
 #include<ctime>
 
-#define RATE_PER_HOUR 10000
+#define FEE_PER_HOUR 10000
 
 // Car class
 class Car {
@@ -14,7 +15,7 @@ private:
     int id;
     static int totalCars;
     bool parked = false;
-    chrono::system_clock::time_point entryTime;
+    std::chrono::system_clock::time_point entryTime;
 
 
 public:    
@@ -23,13 +24,14 @@ public:
 
     Car(int carId) : id(carId) {}
 
+    // marking entry time
     void markEntryTime()
     {
         parked = true;
-        entryTime = chrono::system_clock::now();
+        entryTime = std::chrono::system_clock::now();
     }
     
-    // it will be on seconds so while showing demo it will more logical
+    // it will be on seconds kinda more logical
     long long getParkedTimeSeconds() const
     {
         if(!parked)
@@ -37,13 +39,13 @@ public:
             return 0;
         }
 
-        auto now = chrono::system_clock::now();
+        auto now = std::chrono::system_clock::now();
         auto duration = now - entryTime;
 
-        return chrono::duration_cast<chrono::seconds>(duration).count();
+        return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
     }
 
-    string getFormattedTime() const
+    std::string getFormattedTime() const
     {
         long long seconds = getParkedTimeSeconds();
 
@@ -51,24 +53,25 @@ public:
         long long m = (seconds % 3600) / 60;
         long long s = seconds % 60;
 
-        ostringstream out;
+        std::ostringstream out;
         out << h << "h "<< m << "m " << s<<"s ";
         return out.str(); 
     }
 
+    // seconds for showing differnce in short time
     double computeFee() const
     {
         long long seconds = getParkedTimeSeconds();
-        double ratePerSecond = RATE_PER_HOUR / 3600.0;
+        double ratePerSecond = FEE_PER_HOUR / 3600.0;
         return seconds * ratePerSecond;
     }
 
     // Get formatted fee with currency
-    string getFormattedFee() const
+    std::string getFormattedFee() const
     {
         double fee = computeFee();
-        ostringstream out;
-        out << std::fixed << std::setprecision(2) << fee << " units";
+        std::ostringstream out;
+        out << std::fixed << std::setprecision(2) << fee << " sum\n";
         return out.str();
     }
 
@@ -131,9 +134,9 @@ public:
         return Car(++totalCars);
     }
 
-    // Overload << for easy printing
+    // Overload << for printing car information
     friend std::ostream& operator<<(std::ostream& os, const Car& c) {
-        os << c.getId() << " | "<< c.getFormattedTime() << "| Fee: " << c.getFormattedFee();
+        os << c.getId() << " | "<< c.getFormattedTime() << "| Fee: " << c.getFormattedFee() << std::endl;
         return os;
     }
 };

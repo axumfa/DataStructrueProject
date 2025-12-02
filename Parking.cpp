@@ -47,7 +47,7 @@ public:
     int findCarLane(int carId) const {
         // it will do linear search so it will be O(N)
         for (int i = 0; i < laneCount; ++i) {
-            // Try to find car in each lane by iterating through the stack
+            // Try to find car in each lane by poping through the stack
             // Since Stack doesn't expose direct iteration, we'll use peek and pop temporarily
             Stack<Car> tempStack = parkingLanes[i];
             while (!tempStack.isEmpty()) {
@@ -137,7 +137,7 @@ public:
         
         cout << "Total movements (pops + pushes): " << moves << "\n";
         cout << "-------------------------------------------\n";
-        cout << "💰 Fee Collected: " << removedCar.getFormattedFee() << "\n";
+        cout << "Fee Collected: " << removedCar.getFormattedFee() << "\n";
         cout << "-------------------------------------------\n";
         return fee;
     }
@@ -236,13 +236,13 @@ public:
     {
         cout << "\n===== Financial Report =====\n";
         cout << "Total Cars Served: " << totalCarsServed << "\n";
-        cout << "Total Revenue Collected: " << fixed << setprecision(2) << totalRevenue << " units\n";
+        cout << "Total Revenue Collected: " << fixed << setprecision(2) << totalRevenue << " Sum\n";
         
         if (totalCarsServed > 0) {
             double avgFee = totalRevenue / totalCarsServed;
-            cout << "Average Fee per Car: " << fixed << setprecision(2) << avgFee << " units\n";
+            cout << "Average Fee per Car: " << fixed << setprecision(2) << avgFee << " Sum\n";
         } else {
-            cout << "Average Fee per Car: 0.00 units\n";
+            cout << "Average Fee per Car: 0.00 Sum\n";
         }
         
         cout << "=============================\n";

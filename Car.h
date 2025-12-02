@@ -28,10 +28,11 @@ public:
     void markEntryTime()
     {
         parked = true;
+        // setting entry time with use of chrono system_clock
         entryTime = std::chrono::system_clock::now();
     }
     
-    // it will be on seconds kinda more logical
+    // it will be on seconds kinda more logical it is neccesary for passing it into calculator function
     long long getParkedTimeSeconds() const
     {
         if(!parked)

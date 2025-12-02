@@ -1,5 +1,6 @@
 #include <iostream>
 #include<iomanip>
+#include<climits>
 #include "Array.h"
 #include "Queue.h"
 #include "Stack.h"
@@ -45,8 +46,10 @@ public:
 
     // Find which lane contains a specific car ID
     int findCarLane(int carId) const {
+        
         // it will do linear search so it will be O(N)
         for (int i = 0; i < laneCount; ++i) {
+            
             // Try to find car in each lane by poping through the stack
             // Since Stack doesn't expose direct iteration, we'll use peek and pop temporarily
             Stack<Car> tempStack = parkingLanes[i];
@@ -90,7 +93,7 @@ public:
                 {
                     found = true;
                     removedCar = c;  // save for fee calculation
-                    cout << "\n✓ Car " << carId << " found and removed!\n";
+                    cout << "\n Car " << carId << " found and removed!\n";
                     break; // found and removed target
                 }
                 
@@ -101,7 +104,7 @@ public:
 
             if(!found)
             {
-                cout << "\n✗ Car not found in this lane.\n";
+                cout << "\n Car not found in this lane.\n";
                 return -1.0;
             }
 
@@ -126,7 +129,7 @@ public:
             cout << "\n";
 
         } catch (...) {
-            cout << "\n✗ Error during car removal process.\n"; 
+            cout << "\n Error during car removal process.\n"; 
             return -1.0;
         }
         
@@ -270,9 +273,6 @@ public:
 
 };
 
-// Note: collectPayment() is now integrated into removeCar() method
-// which calculates fee and adds to totalRevenue automatically
-
 void menu()
 {
     cout << "\n====== INHA University - Parking Lot Management System ======\n";
@@ -309,9 +309,9 @@ void menu()
             cin >> carId;
             int laneUsed;
             if (lot.parkCar(carId, laneUsed)) {
-                cout << "✓ Car " << carId << " successfully parked in Lane " << (laneUsed + 1) << ".\n";
+                cout << "Car " << carId << " successfully parked in Lane " << (laneUsed + 1) << ".\n";
             } else {
-                cout << "✗ ERROR: All lanes are full. Cannot park car " << carId << ".\n";
+                cout << "ERROR: All lanes are full. Cannot park car " << carId << ".\n";
             }
         } 
 
@@ -322,7 +322,7 @@ void menu()
             cin >> carId;
             double fee = lot.removeCar(carId);
             if (fee < 0) {
-                cout << "✗ ERROR: Car " << carId << " not found in any lane.\n";
+                cout << "ERROR: Car " << carId << " not found in any lane.\n";
             }
         } 
         else if (choice == 3) { lot.displayAllLanes(); } 

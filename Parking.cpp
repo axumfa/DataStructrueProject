@@ -66,21 +66,22 @@ public:
         int lane = findCarLane(carId);
         if (lane == -1) return -1; // not found
 
-        Stack<Car>& s = parkingLanes[lane];
+        Stack<Car>& laneStack = parkingLanes[lane];
         Queue<Car> tempQueue(laneCapacity); // temporary queue for displaced cars
+        Stack<Car> tempStack(laneCapacity); // it is for tracking orders
 
         int moves = 0;
         bool found = false;
 
         cout << "\n--- Removal Process for Car " << carId << " from Lane " << (lane + 1) << " ---\n";
-        cout << "Cars moved temporarily (in order): ";
 
         try {
             // Popping cars until we find the correct one
-            while (!s.isEmpty()) 
+            while (!laneStack.isEmpty()) 
             {
-                Car c = s.pop();
+                Car c = laneStack.pop();
                 ++moves; // each pop is a move
+
 
                 if (c.getId() == carId) 
                 {
@@ -88,8 +89,10 @@ public:
                     cout << "\n✓ Car " << carId << " found and removed!\n";
                     break; // found and removed target
                 }
-                tempQueue.enqueue(c);
-                cout << c.getId() << " ";
+                
+                tempStack.push(c);
+                cout << c.getId() << " car pushed to temp stack\n";
+        
             }
 
             if(!found)
@@ -98,14 +101,23 @@ public:
                 return -1;
             }
 
-            // Restoring cars from queue back to stack
-            cout << "Re-parking cars back (from queue): ";
+            // Restoring cars from stack to queue 
+            cout << "Storing cars into temp queue\n";
+            while(!tempStack.isEmpty())
+            {
+                Car c = tempStack.pop();
+                tempQueue.enqueue(c);
+                ++moves;
+                cout << c.getId() << " car moved into the temp Queue\n";
+            }
+            // it will help for order 
             while(!tempQueue.isEmpty())
             {
                 Car c = tempQueue.dequeue();
-                s.push(c);
+                laneStack.push(c);
                 ++moves;
-                cout << c.getId() << " ";
+                cout << c.getId() << " car moved into parking lane\n";
+
             }
             cout << "\n";
 
@@ -223,7 +235,7 @@ public:
         for (int i = 0; i < laneCount; ++i) 
         {
             double percent = (getLaneOccupancy(i) * 100.0) / laneCapacity;
-            cout << "  Lane " << (i + 1) << ": "<< fixed << getLaneOccupancy(i) << "% full\n";
+            cout << "  Lane " << (i + 1) << ": "<< fixed << setprecision(2) << percent << "% full\n";
         }
         cout << "==============================\n";
     }

@@ -44,11 +44,7 @@ public:
     // copy constructor
     Car(const Car& other) : id(other.id), parked(other.parked), entryTime(other.entryTime) {}
 
-    // destructor
-    ~Car()
-    {
-        if(id != 0) usedIds.erase(id);
-    }
+
 
     // marking entry time
     void markEntryTime()

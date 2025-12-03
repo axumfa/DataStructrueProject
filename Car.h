@@ -2,6 +2,7 @@
 #include<iostream>
 #include<sstream>
 #include<string>
+#include<unordered_set>
 #include<chrono>
 #include<stdexcept>
 #include<iomanip>
@@ -14,6 +15,10 @@ class Car {
 private:
     int id;
     static int totalCars;
+
+    // it will for not using same id ( it is done by set in this case)
+    static std::unordered_set<int> usedIds;
+    
     bool parked = false;
     std::chrono::system_clock::time_point entryTime;
 
@@ -22,7 +27,28 @@ public:
     
     Car() : id(0) {}
 
-    Car(int carId) : id(carId) {}
+    Car(int carId) 
+    {
+        // if there is already same id
+        if(usedIds.count(carId) > 0)
+        {
+            throw std::invalid_argument("Duplicate Car ID: " + std::to_string(carId));
+        }
+
+        id = carId;
+        usedIds.insert(id);
+
+        if(carId > totalCars) { totalCars = carId; }
+    }
+    
+    // copy constructor
+    Car(const Car& other) : id(other.id), parked(other.parked), entryTime(other.entryTime) {}
+
+    // destructor
+    ~Car()
+    {
+        if(id != 0) usedIds.erase(id);
+    }
 
     // marking entry time
     void markEntryTime()
@@ -144,3 +170,4 @@ public:
 
 // static total cars
 int Car::totalCars = 0;
+std::unordered_set<int> Car::usedIds;

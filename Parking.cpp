@@ -67,6 +67,11 @@ public:
         return -1;
     }
 
+    // Check whether an ID is currently unused in the parking lot
+    bool isCarIdAvailable(int carId) const {
+        return findCarLane(carId) == -1;
+    }
+
     // Remove a specific car and count total movements
     double removeCar(int carId) {
         int lane = findCarLane(carId);
@@ -297,7 +302,8 @@ void menu()
         cout << "3) Display All Lanes\n";
         cout << "4) Display Statistics\n";
         cout << "5) View Financial Report\n";
-        cout << "6) Exit\n";
+        cout << "6) Check Car ID Availability\n";
+        cout << "7) Exit\n";
         cout << "==================\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -307,6 +313,12 @@ void menu()
             int carId;
             cout << "Enter car ID to park: ";
             cin >> carId;
+
+            if (!lot.isCarIdAvailable(carId)) {
+                cout << "ERROR: Car " << carId << " is already parked in the lot.\n";
+                continue;
+            }
+
             int laneUsed;
             if (lot.parkCar(carId, laneUsed)) {
                 cout << "Car " << carId << " successfully parked in Lane " << (laneUsed + 1) << ".\n";
@@ -329,7 +341,19 @@ void menu()
         else if (choice == 4) { lot.displayStatistics(); }
         else if (choice == 5) { lot.displayFinancialReport(); }
         
-        else if (choice == 6) 
+        else if (choice == 6)
+        {
+            int carId;
+            cout << "Enter car ID to check: ";
+            cin >> carId;
+            if (lot.isCarIdAvailable(carId)) {
+                cout << "Car ID " << carId << " is available.\n";
+            } else {
+                cout << "Car ID " << carId << " is already in use.\n";
+            }
+        }
+        
+        else if (choice == 7) 
         { 
             cout << "Exiting Program\n";
             break; 

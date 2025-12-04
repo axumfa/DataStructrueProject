@@ -84,9 +84,9 @@ public:
     // seconds for showing differnce in short time
     double computeFee() const
     {
+        // Use exact seconds so fee can be fractional (e.g. 263.89 sum), not rounded to full hours
         long long seconds = getParkedTimeSeconds();
-        double ratePerSecond = FEE_PER_HOUR / 3600.0;
-        return seconds * ratePerSecond;
+        return seconds * FEE_PER_HOUR / 3600.0;
     }
 
     // Get formatted fee with currency
@@ -129,6 +129,8 @@ public:
     void resetParked()
     {
         parked = false;
+        // Free up this ID so it can be reused after the car leaves the lot
+        usedIds.erase(id);
     }
 
     // Get entry time as string (for logging)
@@ -155,6 +157,16 @@ public:
     
     static Car createNewCar() {
         return Car(++totalCars);
+    }
+
+    // Check if a given ID is currently in use (parked somewhere)
+    static bool isIdInUse(int carId) {
+        return usedIds.count(carId) > 0;
+    }
+
+    // Check if a given ID is currently available (not parked)
+    static bool isIdAvailable(int carId) {
+        return !isIdInUse(carId);
     }
 
     // Overload << for printing car information

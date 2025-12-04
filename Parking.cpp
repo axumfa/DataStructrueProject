@@ -69,7 +69,8 @@ public:
 
     // Check whether an ID is currently unused in the parking lot
     bool isCarIdAvailable(int carId) const {
-        return findCarLane(carId) == -1;
+        // Use Car's internal ID tracking set for a fast and consistent check
+        return Car::isIdAvailable(carId);
     }
 
     // Remove a specific car and count total movements
@@ -83,7 +84,8 @@ public:
 
         int moves = 0;
         bool found = false;
-        Car removedCar(0);  // store the removed car for fee calculation
+        // default-construct; do NOT register a fake ID in Car's usedIds set
+        Car removedCar;  // store the removed car for fee calculation
 
         cout << "\n--- Removal Process for Car " << carId << " from Lane " << (lane + 1) << " ---\n";
 
@@ -140,6 +142,7 @@ public:
         
         // Calculate and collect payment
         double fee = removedCar.computeFee();
+        // mark car as no longer parked and free its ID for future use
         totalRevenue += fee;
         totalCarsServed++;
         
@@ -147,6 +150,8 @@ public:
         cout << "-------------------------------------------\n";
         cout << "Fee Collected: " << removedCar.getFormattedFee() << "\n";
         cout << "-------------------------------------------\n";
+
+        removedCar.resetParked();
         return fee;
     }
 

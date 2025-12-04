@@ -142,16 +142,21 @@ public:
         
         // Calculate and collect payment
         double fee = removedCar.computeFee();
-        // mark car as no longer parked and free its ID for future use
+        
+        // detailed informatino of removed car
+        std::string feeStr = removedCar.getFormattedFee();
+        
+        // getting rid of from set and just making parked false just in case
+        removedCar.resetParked();
+
+
         totalRevenue += fee;
         totalCarsServed++;
         
         cout << "Total movements (pops + pushes): " << moves << "\n";
         cout << "-------------------------------------------\n";
-        cout << "Fee Collected: " << removedCar.getFormattedFee() << "\n";
+        cout << "Fee Collected: " << feeStr << "\n";
         cout << "-------------------------------------------\n";
-
-        removedCar.resetParked();
         return fee;
     }
 
@@ -192,7 +197,7 @@ public:
         }
     }
 
-        // One Lane Occupancy
+        // One Lane Occupancy it is useful for statistics
     int getLaneOccupancy(int laneIndex) const
     {
         if(laneIndex < 0 || laneIndex >= laneCount) { return -1; }
@@ -220,6 +225,7 @@ public:
         return cnt;
     }
 
+    // just finding minimum one
     int getLeastOccupiedLane() const{
         int minOccupancy = INT_MAX;
         int leastLane = 0;

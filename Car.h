@@ -8,6 +8,10 @@
 #include<iomanip>
 #include<ctime>
 
+// iomanip for formatting
+// ctime and chrono for usage of real time tracking
+
+
 #define FEE_PER_HOUR 10000
 
 // Car class
@@ -68,6 +72,7 @@ public:
         return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
     }
 
+    // just for better looking output )
     std::string getFormattedTime() const
     {
         long long seconds = getParkedTimeSeconds();
@@ -81,19 +86,20 @@ public:
         return out.str(); 
     }
 
-    // seconds for showing differnce in short time
+    // calculation of the car's cost
     double computeFee() const
     {
-        // Use exact seconds so fee can be fractional (e.g. 263.89 sum), not rounded to full hours
         long long seconds = getParkedTimeSeconds();
         return seconds * FEE_PER_HOUR / 3600.0;
     }
 
-    // Get formatted fee with currency
+    // Get formatted fee with currency for output when we will remove car 
     std::string getFormattedFee() const
     {
         double fee = computeFee();
         std::ostringstream out;
+
+        // formatting output with iomanip fixed 
         out << std::fixed << std::setprecision(2) << fee << " sum\n";
         return out.str();
     }
@@ -129,6 +135,7 @@ public:
     void resetParked()
     {
         parked = false;
+
         // Free up this ID so it can be reused after the car leaves the lot
         usedIds.erase(id);
     }
@@ -138,12 +145,16 @@ public:
     {
         if (!parked) return "Not parked";
         
+        // it will cast entry time into seconds it used to be sth like 12:34:45
         auto sctp = std::chrono::time_point_cast<std::chrono::seconds>(entryTime);
+        
+        // to_time_t will make it more readable 
         auto tt = std::chrono::system_clock::to_time_t(sctp);
+        
         std::ostringstream oss;
         oss << std::ctime(&tt);
         std::string result = oss.str();
-        // Remove trailing newline
+    
         if (!result.empty() && result.back() == '\n') {
             result.pop_back();
         }
@@ -178,4 +189,6 @@ public:
 
 // static total cars
 int Car::totalCars = 0;
+
+// empty userIds set
 std::unordered_set<int> Car::usedIds;
